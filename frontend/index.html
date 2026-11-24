@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReportFix</title>
+<style>
+  body { font-family: system-ui, Arial, sans-serif; margin: 0; background: #f4f5f7; color: #1b1f24; }
+  #bar { background: #14213d; color: #fff; padding: 8px 12px; position: sticky; top: 0; z-index: 5; }
+  #bar .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 4px; }
+  #bar b { margin-right: 4px; font-size: 12px; opacity: .8; }
+  .chip { border: 1px solid #5c6b8a; background: #1f3058; color: #fff; padding: 3px 8px; border-radius: 12px; cursor: pointer; font-size: 12px; }
+  .chip.on { background: #fca311; color: #14213d; border-color: #fca311; font-weight: 700; }
+  .danger { background: #9d0208; border-color: #9d0208; }
+  .good { background: #2a9d8f; border-color: #2a9d8f; }
+  #banner { font-size: 13px; padding: 4px 0 0; }
+  #tabs { background: #fff; padding: 6px 12px; border-bottom: 1px solid #ddd; display: flex; gap: 6px; flex-wrap: wrap; }
+  #tabs button { border: 1px solid #ccd; background: #fff; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+  #tabs button.on { background: #14213d; color: #fff; }
+  main { max-width: 980px; margin: 12px auto; padding: 0 12px; }
+  .card { background: #fff; border: 1px solid #dde; border-radius: 6px; padding: 10px 12px; margin: 10px 0; }
+  .p1 { border-left: 6px solid #d00000; } .p2 { border-left: 6px solid #f77f00; }
+  .p3 { border-left: 6px solid #2a9d8f; } .p4 { border-left: 6px solid #8d99ae; }
+  .conf { border-left: 6px solid #6a0dad; background: #faf5ff; }
+  .tag { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 8px; background: #e9ecef; margin-right: 4px; }
+  .tag.P1 { background: #d00000; color: #fff; } .tag.P2 { background: #f77f00; color: #fff; }
+  .tag.st { background: #14213d; color: #fff; }
+  .small { font-size: 12px; color: #555; } .warn { color: #b00020; } .ok { color: #1b7f3b; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 80px; padding: 8px; font-size: 14px; }
+  input, select { padding: 5px; margin: 2px; }
+  button.act { padding: 5px 10px; margin: 3px 3px 3px 0; cursor: pointer; }
+  .tl { font-size: 12px; color: #444; margin: 4px 0 0 14px; padding: 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; background: #fff; }
+  td, th { border: 1px solid #dde; padding: 4px 6px; text-align: left; }
+  .preset { font-size: 12px; margin: 2px; padding: 3px 7px; cursor: pointer; background: #eef; border: 1px solid #ccd; border-radius: 4px; }
+  h3 { margin: 14px 0 4px; }
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div id="tabs"></div>
+<main id="main"></main>
+<script src="app.js"></script>
+</body>
+</html>

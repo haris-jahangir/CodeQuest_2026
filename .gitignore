@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+reportfix.db
+reportfix.db-wal
+reportfix.db-shm
+*.log
+.vscode/
+.idea/
