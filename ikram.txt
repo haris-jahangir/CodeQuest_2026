@@ -1,0 +1,19 @@
+Students:
+->Reports Issue
+->Have Trust score
+->Crowd Matters
+->See live tracking
+->Confirm whether the issue is resolved or not.
+
+Staff:
+->Marks the issue resolved or not.
+->Sees live issues
+
+System:
+->Evaluate the statement and set the priority of issue (issue is not command its statement).
+->Ranks the issue on the basis on priority
+->No guessing
+->Cant entertaint same issue again if it is pending
+
+Admin:
+->sees everything
