@@ -197,3 +197,73 @@ States: `open → in_progress → resolved_pending_confirmation → closed | reo
 
 ## 13. Honest Limitations to State
 Document anything unfinished (e.g. brigading detection is heuristic, location aliases are manually curated, Roman Urdu coverage is keyword plus LLM and not exhaustive).
+
+---
+
+## 14. AI Model Decision: Gemma 4
+
+- **Primary:** Gemma 4 run locally through Ollama (`gemma4:e4b`). It needs no internet or API key at the venue, so the live attack test does not depend on wifi.
+- **Backup:** Gemma 4 through the Gemini API / Google AI Studio, switchable by one config value.
+- **Last resort:** the rule-based classifier (keyword lists in English and Roman Urdu, fuzzy location match). It runs whenever the model times out or returns invalid JSON.
+- **Open check:** Gemma 4's accuracy on Roman Urdu with typos is untested. Verify it on the attack list in Section 8 before relying on it.
+- The model only extracts facts as JSON. It never outputs priority, permissions, or vote results.
+
+## 15. Application Workflow
+
+### Step 0. Judge panel (always visible)
+One-click user switch, instant new-student creation, reset all data (reseeds locations, departments, demo users).
+
+### Step 1. Student submits free text
+No other field is required.
+
+### Step 2. Pre-check (code)
+- Normalize text (typos, Roman Urdu variants, "lab3" vs "Lab 3").
+- Flag instruction-like phrases ("ignore rules", "mark critical"). The text is still treated as data, and the flag costs the reporter trust.
+- Record SHOUTING, which has no effect on priority.
+
+### Step 3. Extraction (Gemma 4)
+Output is JSON only: `problem_type`, `location_text`, `hazard_types`, `is_sensitive`, `one_line_reason`. The report is passed as quoted data. The model returns no priority.
+
+### Step 4. Validation and overrides (code)
+1. Schema and enum check. Invalid or timed out → rule-based classifier.
+2. Location matched against the whitelist and aliases. No match → status `needs_clarification`, ask the student, do not route.
+3. Hazard keywords (English and Roman Urdu) force P0, whatever the model said.
+4. Sensitive keywords (harassment, ragging) force confidential.
+5. `problem_type` → department by lookup table. The model's department guess is a cross-check only.
+
+### Step 5. Grouping
+Candidates = open issues with the same canonical location and the same `problem_type`. Gemma 4 or embeddings confirm "same problem". Match → joiner added, "me too" +1. No match → new issue. Confidential reports are never grouped or shown to others.
+
+### Step 6. Priority (code only)
+`priority = max(hazard → P0, base severity of problem type) + crowd boost`. The crowd boost uses the trust-weighted sum of distinct affected users with a per-user cap. A non-safety issue needs several distinct users before it moves up a tier.
+
+### Step 7. Routing and visibility
+- Normal issue → department queue, public board, student tracker.
+- Confidential issue → admin-only queue. Not on the public board, the trending board, or any other department's queue. Reporter shown as anonymous.
+
+### Step 8. Staff action
+Staff see only their department. Status moves `open → in_progress → resolved`.
+
+### Step 9. Confirmation
+On `resolved`, only the reporter and joiners can vote confirm or dispute, once each. Votes are weighted by trust and account age. Enough weighted disputes with a minimum voter count → reopen. Enough confirmations → closed. Other users are rejected.
+
+### Step 10. Trust ledger
+Each change is an event (reason, delta, timestamp). Score = base + sum of events. A "Why this score?" page lists them. A burst of votes from brand-new accounts is flagged and discounted (bonus).
+
+### Step 11. Boards (bonus)
+Trending board of non-confidential issues by crowd-score growth. Admin summary written by Gemma 4 from non-confidential aggregates only.
+
+### Division of work
+
+| Gemma 4 | Plain code |
+|---|---|
+| Reads messy English / Roman Urdu text | Location validity |
+| Extracts problem type, hazards, sensitivity, reason | Final priority and routing |
+| Judges whether two reports are the same problem | Confidentiality and permissions |
+| Writes the admin summary (bonus) | Voting, trust, thresholds, counts |
+
+## 16. Open Decisions (to settle before building)
+1. Backend stack (default proposal: Python + SQLite).
+2. Exact campus location list and aliases (needs the team's input; no list was given).
+3. Voting thresholds and trust weights (starting values to be tuned during testing).
+4. Whether a welfare role exists for confidential reports, or admin only.
